@@ -67,11 +67,54 @@ function enable_mouse(can){
     });
 }
 
-var can = three_canvas({canvas: canvas});
-var gif_can = three_canvas({canvas: gif_canvas});
+function get_file(file, callback){
+    try{
+        var xhr = new XMLHttpRequest;
+        xhr.open('GET', "./" + file, true);
+        xhr.onreadystatechange = function(){
+            if (4 == xhr.readyState) {
+                var val = xhr.responseText;
+                callback(val);
+            }
+        };
+        xhr.send();
+    } catch (e){
+        // Do nothing
+        // Errors will be logged anyway
+    }
+}
+
+var shaders = {};
+var shader_count = 0;
+
+function on_shader_loaded(){
+    shader_count++;
+
+    if(shader_count == 2){
+        can = three_canvas({
+            canvas: canvas,
+            shaders: shaders
+        });
+        gif_can = three_canvas({
+            canvas: gif_canvas,
+            shaders: shaders
+        });
+    }
+}
+
+var can, gif_can;
+
+get_file("./shaders/default/fragment.glsl", function(value){
+    shaders.fragment = value;
+    on_shader_loaded();
+});
+
+get_file("./shaders/default/vertex.glsl", function(value){
+    shaders.vertex = value;
+    on_shader_loaded();
+});
 
 var gif_button = qsa("button[name='make-gif']")[0];
-
 gif_button.addEventListener("click", make_gif);
 
 // Render all the frames
@@ -84,7 +127,7 @@ function make_gif(){
     gif_can.stop();
     
     for(var i = 0; i < anim_len; i++){
-        gif_can.render();
+        gif_can.render((i + 1) / anim_len);
         to_export.data.push(gif_canvas.toDataURL());
     }
 

@@ -1,3 +1,4 @@
+
 function three_canvas(params) {
     var scene, camera, renderer;
     var geometry, material, mesh;
@@ -12,22 +13,26 @@ function three_canvas(params) {
         1, 10000
     );
 
-    camera.position.z = 1000;
+    camera.position.z = 400;
     
-    geometry = new THREE.BoxGeometry( 200, 200, 200 );
-    material = new THREE.MeshBasicMaterial({
-        color: 0xff0000,
-        wireframe: true
+    geometry = new THREE.BoxGeometry(200, 200, 200);
+
+    var uniforms = {
+        time: {value: 1.0},
+    };
+
+    material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: params.shaders.vertex,
+        fragmentShader: params.shaders.fragment,
     });
-    
-    mesh = new THREE.Mesh( geometry, material );
-    scene.add( mesh );
+
+    mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
     
     renderer = new THREE.WebGLRenderer({
         canvas: canvas
     });
-    console.log(canvas)
-    //renderer.setSize( window.innerWidth, window.innerHeight );
 
     var exports = {};
 
@@ -36,13 +41,12 @@ function three_canvas(params) {
     animate();
 
     function animate() {
-        requestAnimationFrame( animate );
-        
+        requestAnimationFrame(animate);
+
         if(playing){
             mesh.rotation.x += 0.01;
-            mesh.rotation.y += 0.02;
-            
-            renderer.render( scene, camera );
+            uniforms.time.value += 0.05;
+            renderer.render(scene, camera);
         }
     }
 
@@ -56,11 +60,12 @@ function three_canvas(params) {
     
     exports.canvas = canvas;
     
-    exports.render = function(){
-        mesh.rotation.x += 0.01;
-        mesh.rotation.y += 0.02;
+    exports.render = function(time){
+        mesh.rotation.x = time * 0.5 * Math.PI;
         
-        renderer.render( scene, camera );
+        uniforms.time.value = time;
+        
+        renderer.render(scene, camera);
     };
     
     return exports;

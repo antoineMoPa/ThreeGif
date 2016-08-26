@@ -25,10 +25,17 @@ void main(void){
         col.r += 0.6 * window;
         col.g += 0.4 * window;
 
-        // Some jitter
-        col.r *= 1.0 + 0.2 * sin(0.1 * vpos.x * vpos.y);
-        col.g *= 1.0 + 0.3 * sin(0.2 * vpos.x * vpos.y);
-        col.b *= 1.0 + 0.3 * sin(0.04 * vpos.x * vpos.y);
+        if(window > 0.5){
+            // Some jitter
+            col.r *= 1.0 + 0.2 * sin(0.1 * vpos.x * vpos.y);
+            col.g *= 1.0 + 0.3 * sin(0.2 * vpos.x * vpos.y);
+            col.b *= 1.0 + 0.3 * sin(0.04 * vpos.x * vpos.y);
+        } else {
+            // Some jitter
+            col.r *= 1.0 + 0.2 * sin(0.01 * vpos.x * vpos.y);
+            col.g *= 1.0 + 0.3 * sin(0.02 * vpos.x * vpos.y);
+            col.b *= 1.0 + 0.3 * sin(0.04 * vpos.x * vpos.y);
+        }
         
     } else {
         // Either roof or floor

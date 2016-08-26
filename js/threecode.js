@@ -12,15 +12,39 @@ function three_canvas(params) {
         1, 10000
     );
 
-    camera.position.y = 100;
+    camera.position.y = 40;
     
+    // World sphere
+    var sgeometry = new THREE.SphereGeometry(600, 32, 32);
+    var smaterial = new THREE.ShaderMaterial({
+        vertexShader: params.shaders.sky.vertex,
+        fragmentShader: params.shaders.sky.fragment,
+        side: THREE.BackSide
+    });
+
+    // Ground
+    var gmaterial = new THREE.MeshBasicMaterial({
+        color: 0x333333
+    });
+    var ggeometry = new THREE.BoxGeometry( 10000, 0.3, 10000 );
+    var gcube = new THREE.Mesh(ggeometry, gmaterial);
+    scene.add(gcube);
+    
+    var sphere = new THREE.Mesh(sgeometry, smaterial);
+    sphere.position.x = 0.0;
+    sphere.position.y = 0.0;
+    sphere.position.z = 0.0;
+    
+    scene.add(sphere);
+
     var geometry = new THREE.BoxGeometry(10, 10, 10);
 
     var uniforms = {
         time: {value: 1.0},
     };
 
-    material = new THREE.ShaderMaterial({
+    // Buildings
+    var material = new THREE.ShaderMaterial({
         uniforms: uniforms,
         vertexShader: params.shaders.vertex,
         fragmentShader: params.shaders.fragment,
@@ -42,6 +66,7 @@ function three_canvas(params) {
             scene.add(mesh);
         }
     }
+    
     renderer = new THREE.WebGLRenderer({
         canvas: canvas
     });

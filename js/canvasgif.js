@@ -87,10 +87,12 @@ function get_file(file, callback){
 var shaders = {};
 var shader_count = 0;
 
+shaders.sky = {};
+
 function on_shader_loaded(){
     shader_count++;
 
-    if(shader_count == 2){
+    if(shader_count == 4){
         can = three_canvas({
             canvas: canvas,
             shaders: shaders
@@ -113,6 +115,17 @@ get_file("./shaders/default/vertex.glsl", function(value){
     shaders.vertex = value;
     on_shader_loaded();
 });
+
+get_file("./shaders/sky/fragment.glsl", function(value){
+    shaders.sky.fragment = value;
+    on_shader_loaded();
+});
+
+get_file("./shaders/sky/vertex.glsl", function(value){
+    shaders.sky.vertex = value;
+    on_shader_loaded();
+});
+
 
 var gif_button = qsa("button[name='make-gif']")[0];
 gif_button.addEventListener("click", make_gif);
